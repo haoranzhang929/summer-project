@@ -1,3 +1,19 @@
+// Web Audio API Setup
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+// Create analyser node
+const analyser = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+const bufferLength = analyser.frequencyBinCount;
+console.log(bufferLength);
+const dataArray = new Float32Array(bufferLength);
+
+// Create Audio Element
+const vocal = new Audio("./audio/vocal.mp3");
+const syth = new Audio("./audio/syth.mp3");
+const drum = new Audio("./audio/drum.mp3");
+const bass = new Audio("./audio/bass.mp3");
+
 // Canvas Setup
 const canvas = document.querySelector("canvas");
 const canvasWidth = window.innerWidth;
@@ -58,7 +74,6 @@ scene.add(cylinder);
 
 // Render Loop
 const render = () => {
-  let speed = 0.01;
   requestAnimationFrame(render);
   rotationXY(mesh, 0.01);
   rotationXY(sphere, 0.01);
