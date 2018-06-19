@@ -138,7 +138,7 @@ scene.add(cylinder);
 // Three.js Setup Finish
 
 // Animation Start
-const arr = [];
+
 // Render Loop
 const render = () => {
   requestAnimationFrame(render);
@@ -173,7 +173,7 @@ const render = () => {
   //        Sphere will scale X-axis to 1.5 times bigger                      //
   //        rotation will also be activated                                   //
   //////////////////////////////////////////////////////////////////////////////
-  let sythThreshold = 48;
+  const sythThreshold = 48;
   let syth = Math.floor(sythDataArray[8] + sythThreshold);
   let syth2 = Math.floor(sythDataArray[90] + 2 * sythThreshold);
   //console.log(`Syth: ${syth}`);
@@ -190,7 +190,7 @@ const render = () => {
   //        when bassdrum is detected                                         //
   //        Cone will rotate with the bass drum                               //
   //////////////////////////////////////////////////////////////////////////////
-  let drumThreshold = 50;
+  const drumThreshold = 50;
   let bassDrum = Math.floor(drumDataArray[4]) + drumThreshold;
   //console.log(`Bass Drum: ${bassDrum}`);
   if (bassDrum > 0) {
@@ -202,7 +202,7 @@ const render = () => {
   //        when bass is detected                                             //
   //        Cylinder will rotate with the bass drum                           //
   //////////////////////////////////////////////////////////////////////////////
-  let bassThreshold = 50;
+  const bassThreshold = 50;
   let bass = Math.floor(bassDataArray[4]) + bassThreshold;
   //console.log(`Bass: ${bass}`);
   if (bass > 0) {
