@@ -84,7 +84,7 @@ const canvasHeight = window.innerHeight;
 
 // Renderer Setup
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setClearColor(0x00ff00);
+renderer.setClearColor(0xffffff);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(canvasWidth, canvasHeight);
 
@@ -109,7 +109,7 @@ scene.add(pointLight);
 // Create Elements
 
 //Define Material
-const material = new THREE.MeshLambertMaterial({ color: 0xf3ffe2 });
+const material = new THREE.MeshLambertMaterial({ color: 0xcccc99 });
 
 // Create Box Object
 const geometry = new THREE.BoxGeometry(10, 10, 10);
@@ -138,7 +138,7 @@ scene.add(cylinder);
 // Three.js Setup Finish
 
 // Animation Start
-
+const arr = [];
 // Render Loop
 const render = () => {
   requestAnimationFrame(render);
@@ -149,11 +149,67 @@ const render = () => {
   bassAnalyser.getFloatFrequencyData(bassDataArray);
 
   // Animations
-  rotationXY(mesh, 0.01);
-  rotationXY(sphere, 0.01);
-  rotationXY(cone, 0.01);
-  rotationXY(cylinder, 0.01);
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Vocal: 3D Box is correlated to the vocal track                           //
+  //        3D Box by default will rotate slowly                              //
+  //        when vocal is deteced, the color of material will change randomly //
+  //        the rotation speed will increase                                  //
+  //////////////////////////////////////////////////////////////////////////////
+  const vocalThreshold = 100;
+  let vocal = Math.floor(vocalDataArray[256] + vocalThreshold);
+  //console.log(`Vocal: ${vocal}`);
+  if (vocal > 20) {
+    rotationXY(mesh, 0.01);
+    mesh.material.color.r = Math.random() * 2;
+    mesh.material.color.g = Math.random() * 2;
+    mesh.material.color.b = Math.random() * 2;
+  }
+  rotationXY(mesh, 0.001);
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Syth:  Sphere is correlated to the syth track                            //
+  //        when syth1 and syth2 are detected                                 //
+  //        Sphere will scale X-axis to 1.5 times bigger                      //
+  //        rotation will also be activated                                   //
+  //////////////////////////////////////////////////////////////////////////////
+  let sythThreshold = 48;
+  let syth = Math.floor(sythDataArray[8] + sythThreshold);
+  let syth2 = Math.floor(sythDataArray[90] + 2 * sythThreshold);
+  //console.log(`Syth: ${syth}`);
+  //console.log(`Syth2: ${syth2}`);
+  if (syth > 0 || syth2 > 15) {
+    scaleXYZ(sphere, 1.5, 1, 1);
+    rotationXY(sphere, 0.03);
+  } else {
+    sphere.scale.set(1, 1, 1);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Drum:  Cone is correlated to the drum track                              //
+  //        when bassdrum is detected                                         //
+  //        Cone will rotate with the bass drum                               //
+  //////////////////////////////////////////////////////////////////////////////
+  let drumThreshold = 50;
+  let bassDrum = Math.floor(drumDataArray[4]) + drumThreshold;
+  //console.log(`Bass Drum: ${bassDrum}`);
+  if (bassDrum > 0) {
+    rotationXY(cone, 0.01);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Bass:  Cylinder is correlated to the bass track                          //
+  //        when bass is detected                                             //
+  //        Cylinder will rotate with the bass drum                           //
+  //////////////////////////////////////////////////////////////////////////////
+  let bassThreshold = 50;
+  let bass = Math.floor(bassDataArray[4]) + bassThreshold;
+  //console.log(`Bass: ${bass}`);
+  if (bass > 0) {
+    rotationXY(cylinder, 0.01);
+  }
+
+  // Render Scene & Camera
   renderer.render(scene, camera);
 };
 
@@ -163,4 +219,11 @@ const rotationXY = (object, speed) => {
   object.rotation.y += speed;
 };
 
+const scaleXYZ = (object, xSize, ySize, zSize) => {
+  object.scale.x = xSize;
+  object.scale.y = ySize;
+  object.scale.z = zSize;
+};
+
 render();
+playToggle();
