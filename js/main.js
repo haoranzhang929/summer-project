@@ -1,18 +1,59 @@
 // Web Audio API Setup
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
-// Create analyser node
-const analyser = audioCtx.createAnalyser();
-analyser.fftSize = 256;
-const bufferLength = analyser.frequencyBinCount;
-console.log(bufferLength);
-const dataArray = new Float32Array(bufferLength);
+const size = 2048;
+
+// Create Vocal Analyser
+const vocalAnalyser = audioCtx.createAnalyser();
+vocalAnalyser.fftSize = size;
+const vocalBufferLength = vocalAnalyser.frequencyBinCount;
+console.log(`Vocal Buffer Length is ${vocalBufferLength}`);
+const vocalDataArray = new Float32Array(vocalBufferLength);
+
+// Create Syth Analyser
+const sythAnalyser = audioCtx.createAnalyser();
+sythAnalyser.fftSize = size;
+const sythBufferLength = sythAnalyser.frequencyBinCount;
+console.log(`Syth Buffer Length is ${sythBufferLength}`);
+const sythDataArray = new Float32Array(sythBufferLength);
+
+// Create Drum Analyser
+const drumAnalyser = audioCtx.createAnalyser();
+drumAnalyser.fftSize = size;
+const drumBufferLength = drumAnalyser.frequencyBinCount;
+console.log(`Drum Buffer Length is ${drumBufferLength}`);
+const drumDataArray = new Float32Array(drumBufferLength);
+
+// Create Bass Analyser
+const bassAnalyser = audioCtx.createAnalyser();
+bassAnalyser.fftSize = size;
+const bassBufferLength = bassAnalyser.frequencyBinCount;
+console.log(`Bass Buffer Length is ${bassBufferLength}`);
+const bassDataArray = new Float32Array(bassBufferLength);
 
 // Create Audio Element
 const vocal = new Audio("./audio/vocal.mp3");
 const syth = new Audio("./audio/syth.mp3");
 const drum = new Audio("./audio/drum.mp3");
 const bass = new Audio("./audio/bass.mp3");
+
+// Create Audio Nodes
+const vocalSource = audioCtx.createMediaElementSource(vocal);
+const sythSource = audioCtx.createMediaElementSource(syth);
+const drumSource = audioCtx.createMediaElementSource(drum);
+const bassSource = audioCtx.createMediaElementSource(bass);
+
+// Connect Audio Nodes to Analysers
+vocalSource.connect(vocalAnalyser);
+sythSource.connect(sythAnalyser);
+drumSource.connect(drumAnalyser);
+bassSource.connect(bassAnalyser);
+
+// Connect Analusers to Audio Context Destination
+vocalAnalyser.connect(audioCtx.destination);
+sythAnalyser.connect(audioCtx.destination);
+drumAnalyser.connect(audioCtx.destination);
+bassAnalyser.connect(audioCtx.destination);
 
 // Canvas Setup
 const canvas = document.querySelector("canvas");
@@ -75,13 +116,22 @@ scene.add(cylinder);
 // Render Loop
 const render = () => {
   requestAnimationFrame(render);
+  // Get Aduio Data from Audio Analysers
+  vocalAnalyser.getFloatFrequencyData(vocalDataArray);
+  sythAnalyser.getFloatFrequencyData(sythDataArray);
+  drumAnalyser.getFloatFrequencyData(drumDataArray);
+  bassAnalyser.getFloatFrequencyData(bassDataArray);
+
+  // Animations
   rotationXY(mesh, 0.01);
   rotationXY(sphere, 0.01);
   rotationXY(cone, 0.01);
   rotationXY(cylinder, 0.01);
+
   renderer.render(scene, camera);
 };
 
+// Rotation Animation Function
 const rotationXY = (object, speed) => {
   object.rotation.x += speed;
   object.rotation.y += speed;
