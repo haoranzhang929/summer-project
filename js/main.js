@@ -55,6 +55,24 @@ sythAnalyser.connect(audioCtx.destination);
 drumAnalyser.connect(audioCtx.destination);
 bassAnalyser.connect(audioCtx.destination);
 
+// Define Audio Play Toggle Function
+let isPlaying = false;
+const playToggle = () => {
+  if (!isPlaying) {
+    vocal.play();
+    syth.play();
+    drum.play();
+    bass.play();
+    isPlaying = true;
+  } else {
+    vocal.pause();
+    syth.pause();
+    drum.pause();
+    bass.pause();
+    isPlaying = false;
+  }
+};
+
 // Web Audio API Setup Finish
 
 // Three.js Setup Start Here
