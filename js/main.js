@@ -1,4 +1,4 @@
-// Web Audio API Setup
+// Web Audio API Setup Start Here
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 const size = 2048;
@@ -54,6 +54,10 @@ vocalAnalyser.connect(audioCtx.destination);
 sythAnalyser.connect(audioCtx.destination);
 drumAnalyser.connect(audioCtx.destination);
 bassAnalyser.connect(audioCtx.destination);
+
+// Web Audio API Setup Finish
+
+// Three.js Setup Start Here
 
 // Canvas Setup
 const canvas = document.querySelector("canvas");
@@ -112,6 +116,10 @@ const geometry3 = new THREE.CylinderGeometry(5, 5, 20, 32);
 const cylinder = new THREE.Mesh(geometry3, material);
 cylinder.position.set(25, 0, -60);
 scene.add(cylinder);
+
+// Three.js Setup Finish
+
+// Animation Start
 
 // Render Loop
 const render = () => {
